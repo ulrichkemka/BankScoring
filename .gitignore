@@ -1,0 +1,11 @@
+.vscode
+# Ignorer tout le contenu du dossier 'data'
+modele/data/
+
+# Ignorer des fichiers spécifiques du dossier 'notebooks'
+modele/notebooks/df_cleaned_encod.csv
+modele/notebooks/model.pkl
+
+farmd2/
+
+frontend/node_modules/
