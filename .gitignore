@@ -3,9 +3,14 @@
 modele/data/
 
 # Ignorer des fichiers spécifiques du dossier 'notebooks'
-modele/notebooks/df_cleaned_encod.csv
-modele/notebooks/model.pkl
+modele/notebooks/df_cleaned_encod*.csv
+model*.pkl
 
-farmd2/
+backend\app\routers\model.pkl
+
+farmd*/
 
 frontend/node_modules/
+*_bk/
+
+backend/app/routers/model.pkl

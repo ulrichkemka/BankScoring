@@ -1,16 +1,15 @@
 import {
-    EuiButton,
-    EuiButtonIcon,
-    EuiContextMenu,
-    EuiFlexGroup,
-    EuiFlexItem,
-    EuiPanel,
-    EuiPopover,
-    EuiSpacer,
-    EuiTabbedContent,
-    EuiTitle,
-  } from '@elastic/eui'
-import { GitHub } from '@mui/icons-material'
+  EuiButton,
+  EuiButtonIcon,
+  EuiContextMenu,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiPanel,
+  EuiPopover,
+  EuiSpacer,
+  EuiTabbedContent,
+  EuiTitle,
+} from '@elastic/eui'
 import {
   Box,
   Button,
@@ -26,157 +25,206 @@ import {
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
-
+import clientService from '../services/client.service'
+import { Client } from '../models/client'
+import { useSnackBar } from '../contexts/snackbar'
+import { AxiosError } from 'axios'
 
 const HomeForm = () => {
-
-     // State for Credit Simulation Form
+  // State for Credit Simulation Form
+  const [client, setClient] = useState()
   const [skId, setSkId] = useState('')
   const [amountCredit, setAmountCredit] = useState('')
+  const [creditScore, setCreditScore] = useState(undefined)
+  const { showSnackBar } = useSnackBar()
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault()
-        console.log('Simulating Credit for', { skId, amountCredit })
-        // Logic to handle the simulation can be added here.
-      }
+  const handleSubmit = async (event: React.FormEvent) => {
+    let client: Client
+    event.preventDefault()
+    try {
+      console.log('Simulating Credit for', { skId, amountCredit })
 
-return (
-    <div> 
-         <Container >
+      client = await clientService.getClient(skId)
+      setClient(client)
+
+      const score = client.PREDICTION_SCORE
+      setCreditScore(score)
+
+      console.log('Simulating Client', { client })
+      console.log('SCore Client', { score })
+
+      showSnackBar('Client profile loaded successfully.', 'success')
+    } catch (error) {
+      let msg
+      if (
+        error instanceof AxiosError &&
+        error.response &&
+        typeof error.response.data.detail == 'string'
+      )
+        msg = error.response.data.detail
+      else if (error instanceof Error) msg = error.message
+      else msg = String(error)
+      showSnackBar(msg, 'error')
+    }
+  }
+
+  return (
+    <div>
+      <Container>
         <Box sx={{ mb: 4 }}>
-          <Typography variant='body1'>
-        
-            FARMD is a minimalist starter template for a FARM application stack ready to run with
-            docker. It offers basic user management, with options for OAuth2 support via Google, so
-            that you can get started straight away. It is built with a clean design & minimal
-            dependencies in mind, keeping only the essentials.
-          </Typography>
-          <Typography variant='h6' gutterBottom sx={{ mt: 4 }}>
-            Features
+          <Typography variant='h3' gutterBottom sx={{ mt: 4 }}>
+            Simulation de solvabilité
           </Typography>
           <Divider />
 
-          {/* Credit Simulation Form */}
           <Box sx={{ bgcolor: 'orange', padding: 2, mt: 4 }}>
-            <Typography variant="h6" style={{ color: 'white' }}>
+            <Typography variant='h6' style={{ color: 'white' }}>
               Simuler un crédit
             </Typography>
           </Box>
 
           <form onSubmit={handleSubmit}>
-            <Box display="flex" justifyContent="space-between" mb={2}>
+            <Box display='flex' justifyContent='space-between' mb={2}>
               <TextField
-                label="SK_ID_CURR"
+                label='SK_ID_CURR'
                 value={skId}
                 onChange={(e) => setSkId(e.target.value)}
                 fullWidth
-                variant="outlined"
-                margin="dense"
+                variant='outlined'
+                margin='dense'
                 style={{ marginRight: '10px' }}
               />
               <TextField
-                label="Amount credit"
+                label='Amount credit'
                 value={amountCredit}
                 onChange={(e) => setAmountCredit(e.target.value)}
                 fullWidth
-                variant="outlined"
-                margin="dense"
+                variant='outlined'
+                margin='dense'
               />
             </Box>
 
-            <Typography variant="body2" color="textSecondary" style={{ marginBottom: '10px' }}>
+            <Typography variant='body2' color='textSecondary' style={{ marginBottom: '10px' }}>
               Votre score détermine votre niveau de solvabilité.
             </Typography>
 
-            <Button type="submit" variant="contained" color="primary">
-              Envoyer
+            <Button type='submit' variant='contained' color='primary'>
+              Simuler
             </Button>
           </form>
         </Box>
-
       </Container>
       <EuiFlexGroup direction={'column'}>
         <EuiFlexItem>
           <EuiFlexGroup direction={'row'} alignItems='center'>
             <EuiFlexItem grow={false}>
-              <EuiTitle size='s'>
-                <h2>Espace capteurs</h2>
-              </EuiTitle>
+              <Typography variant='h4' gutterBottom sx={{ mt: 4 }}>
+                Résultat de l'analyse :
+              </Typography>
             </EuiFlexItem>
-            <EuiFlexItem>
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
+            <EuiFlexItem size='l'>
+              <Typography variant='h5' color='textSecondary' gutterBottom sx={{ mt: 4 }}>
+                {creditScore
+                  ? `il y a ${creditScore} % de chances que le client soit en défaut de paiement.`
+                  : "Veuillez entrez l'ID du client"}
+              </Typography>
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
 
         <EuiFlexItem grow={false}>
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus
+            suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium
+            cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.
+          </p>
         </EuiFlexItem>
 
-        {/* <EuiFlexGroup direction={'row'}> */}
-          <EuiFlexItem>
-            <EuiFlexGroup direction={'row'}>
-              <EuiFlexItem grow={false}>
-                <EuiPanel>
-                  <EuiTitle size='s'>
-                    <h2>{'Bloc 1'}</h2>
-                  </EuiTitle>
-                  <EuiSpacer size='s' />
-                  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
-                </EuiPanel>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiPanel>
-                  <EuiTitle size='s'>
-                    <h2>{'Bloc 3'}</h2>
-                  </EuiTitle>
-                  <EuiSpacer size='s' />
-                  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
-                </EuiPanel>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexItem>
-
-          <EuiFlexItem>
-            <EuiFlexGroup direction={'row'}>
-
-            </EuiFlexGroup>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiFlexGroup direction={'row'}>
+        <EuiFlexItem>
+          <EuiFlexGroup direction={'row'}>
             <EuiFlexItem grow={false}>
-                <EuiPanel>
-                  <EuiTitle size='s'>
-                    <h2>{'Bloc 4'}</h2>
-                  </EuiTitle>
-                  <EuiSpacer size='s' />
-                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
-                </EuiPanel>
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <EuiPanel>
-                  <EuiTitle size='s'>
-                    <h2>{'Bloc 5'}</h2>
-                  </EuiTitle>
-                  <EuiSpacer size='s' />
-                  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
-                </EuiPanel>
-              </EuiFlexItem>
+              <EuiPanel>
+                <EuiTitle size='s'>
+                  <h2>{'Bloc 1'}</h2>
+                </EuiTitle>
+                <EuiSpacer size='s' />
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis
+                  necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam
+                  corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae
+                  eligendi. Asperiores.
+                </p>
+              </EuiPanel>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiPanel>
+                <EuiTitle size='s'>
+                  <h2>{'Bloc 3'}</h2>
+                </EuiTitle>
+                <EuiSpacer size='s' />
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis
+                  necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam
+                  corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae
+                  eligendi. Asperiores.
+                </p>
+              </EuiPanel>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
 
-              <EuiFlexItem grow={false}>
-                <EuiPanel>
-                  <EuiTitle size='s'>
-                    <h2>{'Bloc 6'}</h2>
-                  </EuiTitle>
-                  <EuiSpacer size='s' />
-                      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae eligendi. Asperiores.</p>
-                </EuiPanel>
-              </EuiFlexItem>
-            </EuiFlexGroup>
-          </EuiFlexItem>
-        {/* </EuiFlexGroup> */}
+        <EuiFlexItem>
+          <EuiFlexGroup direction={'row'}></EuiFlexGroup>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiFlexGroup direction={'row'}>
+            <EuiFlexItem grow={false}>
+              <EuiPanel>
+                <EuiTitle size='s'>
+                  <h2>{'Bloc 4'}</h2>
+                </EuiTitle>
+                <EuiSpacer size='s' />
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis
+                  necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam
+                  corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae
+                  eligendi. Asperiores.
+                </p>
+              </EuiPanel>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiPanel>
+                <EuiTitle size='s'>
+                  <h2>{'Bloc 5'}</h2>
+                </EuiTitle>
+                <EuiSpacer size='s' />
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis
+                  necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam
+                  corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae
+                  eligendi. Asperiores.
+                </p>
+              </EuiPanel>
+            </EuiFlexItem>
+
+            <EuiFlexItem grow={false}>
+              <EuiPanel>
+                <EuiTitle size='s'>
+                  <h2>{'Bloc 6'}</h2>
+                </EuiTitle>
+                <EuiSpacer size='s' />
+                <p>
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis
+                  necessitatibus suscipit alias est omnis sapiente ipsa autem architecto, quam
+                  corrupti veniam laudantium cumque ut, soluta eveniet, excepturi molestiae
+                  eligendi. Asperiores.
+                </p>
+              </EuiPanel>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
       </EuiFlexGroup>
     </div>
   )
 }
-  export default HomeForm
+export default HomeForm
