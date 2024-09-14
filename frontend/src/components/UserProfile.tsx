@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/auth'
 import { useSnackBar } from '../contexts/snackbar'
 import userService from '../services/user.service'
-// import { GoogleIcon } from './LoginForm'
 import { User } from '../models/user'
 import { AxiosError } from 'axios'
 

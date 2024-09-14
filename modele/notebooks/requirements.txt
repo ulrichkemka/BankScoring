@@ -5,4 +5,4 @@ pygwalker
 seaborn
 scikit-learn
 imbalanced-learn
-pickle
+scipy

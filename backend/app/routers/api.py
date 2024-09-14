@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
-from . import login, users
+from . import login, users, clients
 
 api_router = APIRouter()
 api_router.include_router(login.router, prefix="/login", tags=["login"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
-api_router.include_router(users.router, prefix="/predict", tags=["predict"])
+api_router.include_router(clients.router, prefix="/clients", tags=["clients"])
 
 
 
