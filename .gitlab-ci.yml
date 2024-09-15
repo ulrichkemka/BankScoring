@@ -46,9 +46,14 @@ backend_unit_tests:
     - apt-get install -y p7zip-full
     - 7z e ./app/routers/model.zip -o./app/routers/
     - poetry install --with dev
-    # - pip install pytest pytest-cov
-    # - pip install -r backend/requirements.txt
+    # Installer MongoDB
+    - apt-get install -y mongodb-org
+    # Démarrer MongoDB
+    - systemctl start mongod
+    # Importer le fichier CSV dans MongoDB
+    - 7z e ./app/routers/df_cleaned_encod_v2.zip -o./app/routers/
+    - mongoimport --db farmd --collection Client --type csv --headerline --file ./app/routers/df_cleaned_encod_v2.csv --host localhost:27017
+
   script:
-    # - cd backend
     - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
   interruptible: true
