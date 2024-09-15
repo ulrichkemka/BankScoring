@@ -47,12 +47,12 @@ backend_unit_tests:
     - 7z e ./app/routers/model.zip -o./app/routers/
     - poetry install --with dev
     # Installer MongoDB
-    - apt-get install -y mongodb-org
-    # Démarrer MongoDB
     - curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
     - apt-key list
     - echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
     - sudo apt update
+    - apt-get install -y mongodb-org
+    # Démarrer MongoDB
     - systemctl start mongod
     # Importer le fichier CSV dans MongoDB
     - 7z e ./app/routers/df_cleaned_encod_v2.zip -o./app/routers/
