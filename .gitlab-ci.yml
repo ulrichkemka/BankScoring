@@ -44,8 +44,8 @@ backend_unit_tests:
     - cd backend
     - pip install poetry
     - apt-get update -qq
-    - apt-get install -y unrar
-    - unrar e ./app/routers/model.rar ./app/routers/
+    - apt-get install -y p7zip-full
+    - 7z e ./app/routers/model.zip -o./app/routers/
     - poetry install --with dev
     # - pip install pytest pytest-cov
     # - pip install -r backend/requirements.txt
