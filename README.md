@@ -1,22 +1,40 @@
+---
+Project Name :  Credit Scoring
+---
+
 # Home Credit - Credit Scoring
 
-
+[![pipeline status](https://gitlab.com/ulrichkemka/bankscoring/badges/8-deploiement-du-modele/pipeline.svg)](https://gitlab.com/ulrichkemka/bankscoring/-/commits/8-deploiement-du-modele)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-![python_version](https://img.shields.io/badge/Python-%3E=3.10-blue)
+![python_version](https://img.shields.io/badge/Python-%3E=3.11-blue)
 
-This is a template application for a FARM stack. FARM stands for FastAPI, React, MongoDB.
+## Descriptioon
+This project is a Credit Scoring Dashboard and Production Deployment Application designed for Home Credit to assess client creditworthiness by developing, deploying, and providing interpretability for a machine learning model through an API and interactive dashboard.
+You can find the project documentation here:  : [Project Instruction](./documents/Instructions_Project_Credit_Scoring.pdf).
 
 
-## Project structure
+
+## Contributors
+
+| Category                       | Technology                                                        | Responsable                                                     |
+|--------------------------------|-------------------------------------------------------------------|-----------------------------------------------------------------|
+| Management Project             | [GitLab](https://gitlab.com/ulrichkemka/bankscoring/-/boards)     | [Papa Madiodio DIENG](https://gitlab.com/papyDioDio)            |
+| [Backend](./backend/)          | [Fast API](https://fastapi.tiangolo.com/)                         | [Ulrich KEMKA TAKENGNY](https://gitlab.com/ulrichkemka)         |
+| [Fontend](./frontend/)         | [React Js](https://react.dev/)                                    | [Khadim DAFFE](https://gitlab.com/czeed)                        |
+| [Modele IA](./modele/)         | [Scikit Learn](https://scikit-learn.org/stable/)                  | [Cherif Amanotoulha SY](/https://gitlab.com/cherif_Amanatoulha) |
+
+
+## Project structure    
 
 The project is composed of :
 
 * a backend API server built with FastAPI located in the [backend](backend) dir.
 * a frontend web app build with React and located in the [frontend](frontend) dir.
+* a modele AI built with Scikit Learn and located in the [modele](modele) dir
 
 ## Running the application locally for development
 
-To run the application manually in a terminal, see both the [backend](backend/README.md) and [frontend](frontend/README.md)'s READMEs for instructions.
+To run the application manually in a terminal, see three the [backend](backend/README.md), [frontend](frontend/README.md) and [modele](modele/README.md)'s READMEs for instructions.
 
 ## Running the application with Docker
 
@@ -57,14 +75,6 @@ To check the logs of a specific service, add the name of the service, e.g.:
 ```bash
 docker compose logs backend
 ```
-
-### Docker Compose settings for development
-
-When running the application with docker in development, both the frontend and backend directories are mounted as volumes to their corresponding docker containers to enable hot reload of code changes. This allows you to test your changes right away, without having to build the Docker image again. It should only be done during development, for production you should build the Docker image with a recent and stable version of the code.
-
-For the backend, there is a command override that runs `/start-reload.sh` (included in the base image) instead of the default `/start.sh` (also included in the base image). It starts a single server process (instead of multiple, as would be for production) and reloads the process whenever the code changes. Have in mind that if you have a syntax error and save the Python file, it will break and exit, and the container will stop. After that, you can restart the container by fixing the error and running the `docker-compose up -d` command again. The backend [Dockerfile](backend/Dockerfile) is in the backend directory.
-
-For the frontend, when in development, the frontend docker container starts with the `npm run dev -- --host` command, while in production the frontend app is built into static files and the app is served by an nginx server. The [nginx configuration file](frontend/nginx.conf) is in the frontend dir.
 
 ### Accessing the containers
 

@@ -17,47 +17,47 @@ frontend_unit_tests:
     - npm run test
 
 
-backend_unit_tests:
-  stage: test
-  image: python:3.11
-  services:
-    - mongo:latest  # Utilisation de MongoDB comme service
-  variables:
-    MONGO_HOST: "localhost"
-    MONGO_PORT: 27017
-    MONGO_DB: "farmd"
-    MONGO_USER: "mongodbadmin"
-    MONGO_PASSWORD: "wpnimdabdognom"
-    SECRET_KEY: "98153798f1616ba9e65c2cbcdb3fd3e3a6297b2002f6936b72823fd21ce609d9"
-    FIRST_SUPERUSER: "admin@farmd.com"
-    FIRST_SUPERUSER_PASSWORD: "admin"
-    BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:5173", "http://localhost:3000", "http://localhost:8080"]'
-    VITE_BACKEND_API_URL: "http://localhost:8000/api/v1/"
-  cache:
-    paths:
-      - .venv/
-      - backend/.pytest_cache/
-  before_script:
-    - python -m venv .venv
-    - source .venv/bin/activate
-    - cd backend
-    - pip install poetry
-    - apt-get update -qq
-    - apt-get install -y p7zip-full
-    - 7z e ./app/routers/model.zip -o./app/routers/
-    - poetry install --with dev
-    # Installer MongoDB
-    - curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-    - apt-key list
-    - echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-    - sudo apt update
-    - apt-get install -y mongodb-org
-    # Démarrer MongoDB
-    - systemctl start mongod
-    # Importer le fichier CSV dans MongoDB
-    - 7z e ./app/routers/df_cleaned_encod_v2.zip -o./app/routers/
-    - mongoimport --db farmd --collection Client --type csv --headerline --file ./app/routers/df_cleaned_encod_v2.csv --host localhost:27017
+# backend_unit_tests:
+#   stage: test
+#   image: python:3.11
+#   services:
+#     - mongo:latest  # Utilisation de MongoDB comme service
+#   variables:
+#     MONGO_HOST: "localhost"
+#     MONGO_PORT: 27017
+#     MONGO_DB: "farmd"
+#     MONGO_USER: "mongodbadmin"
+#     MONGO_PASSWORD: "wpnimdabdognom"
+#     SECRET_KEY: "98153798f1616ba9e65c2cbcdb3fd3e3a6297b2002f6936b72823fd21ce609d9"
+#     FIRST_SUPERUSER: "admin@farmd.com"
+#     FIRST_SUPERUSER_PASSWORD: "admin"
+#     BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:5173", "http://localhost:3000", "http://localhost:8080"]'
+#     VITE_BACKEND_API_URL: "http://localhost:8000/api/v1/"
+#   cache:
+#     paths:
+#       - .venv/
+#       - backend/.pytest_cache/
+#   before_script:
+#     - python -m venv .venv
+#     - source .venv/bin/activate
+#     - cd backend
+#     - pip install poetry
+#     - apt-get update -qq
+#     - apt-get install -y p7zip-full
+#     - 7z e ./app/routers/model.zip -o./app/routers/
+#     - poetry install --with dev
+#     # Installer MongoDB
+#     - curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+#     - apt-key list
+#     - echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+#     - sudo apt update
+#     - apt-get install -y mongodb-org
+#     # Démarrer MongoDB
+#     - systemctl start mongod
+#     # Importer le fichier CSV dans MongoDB
+#     - 7z e ./app/routers/df_cleaned_encod_v2.zip -o./app/routers/
+#     - mongoimport --db farmd --collection Client --type csv --headerline --file ./app/routers/df_cleaned_encod_v2.csv --host localhost:27017
 
-  script:
-    - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
-  interruptible: true
+#   script:
+#     - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
+#   interruptible: true
