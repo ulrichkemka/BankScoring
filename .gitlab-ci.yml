@@ -43,7 +43,7 @@ backend_unit_tests:
     - source .venv/bin/activate
     - cd backend
     - pip install poetry
-    - poetry install
+    - poetry install --with dev
     # - pip install pytest pytest-cov
     # - pip install -r backend/requirements.txt
   script:
