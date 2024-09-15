@@ -23,12 +23,11 @@ backend_unit_tests:
   services:
     - mongo:latest  # Utilisation de MongoDB comme service
   variables:
-    MONGO_HOST: "mongo"
+    MONGO_HOST: "localhost"
     MONGO_PORT: 27017
-    MONGO_DB: "farmd_test"
+    MONGO_DB: "farmd"
     MONGO_USER: "mongodbadmin"
     MONGO_PASSWORD: "wpnimdabdognom"
-    # Autres variables d'environnement tirées de votre .env
     SECRET_KEY: "98153798f1616ba9e65c2cbcdb3fd3e3a6297b2002f6936b72823fd21ce609d9"
     FIRST_SUPERUSER: "admin@farmd.com"
     FIRST_SUPERUSER_PASSWORD: "admin"
