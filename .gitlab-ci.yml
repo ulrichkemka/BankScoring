@@ -54,11 +54,3 @@ backend_unit_tests:
     - cd backend
     - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
   interruptible: true
-  artifacts:
-    when: always
-    paths:
-      - backend/htmlcov/
-    reports:
-      junit: backend/reports/report.xml
-      cobertura: backend/reports/coverage.xml
-  coverage: '/^TOTAL.*\s+(\d+\%)$/'
