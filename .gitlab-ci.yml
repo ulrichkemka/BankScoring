@@ -1,10 +1,6 @@
 stages:
   - test
 
-
-
-
-
 #--------------------------------------------------------------#
 #                        TESTING JOBS                          #
 #--------------------------------------------------------------#
@@ -13,10 +9,10 @@ frontend_unit_tests:
   stage: test
   cache:
     paths:
-      - web/node_modules/
+      - frontend/node_modules/
   image: node:19-slim
   script:
-    - cd web
+    - cd frontend
     - npm install
     - npm run test
 
@@ -51,6 +47,6 @@ backend_unit_tests:
     # - pip install pytest pytest-cov
     # - pip install -r backend/requirements.txt
   script:
-    - cd backend
+    # - cd backend
     - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
   interruptible: true
