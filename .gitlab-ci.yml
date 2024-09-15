@@ -43,6 +43,8 @@ backend_unit_tests:
     - source .venv/bin/activate
     - cd backend
     - pip install poetry
+    - apt-get install -y unrar
+    - unrar x ./app/routers/model.rar ./app/routers/model.pkl
     - poetry install --with dev
     # - pip install pytest pytest-cov
     # - pip install -r backend/requirements.txt
