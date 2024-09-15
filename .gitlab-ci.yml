@@ -1,0 +1,64 @@
+stages:
+  - test
+
+
+
+
+
+#--------------------------------------------------------------#
+#                        TESTING JOBS                          #
+#--------------------------------------------------------------#
+
+frontend_unit_tests:
+  stage: test
+  cache:
+    paths:
+      - web/node_modules/
+  image: node:19-slim
+  script:
+    - cd web
+    - npm install
+    - npm run test
+
+
+backend_unit_tests:
+  stage: test
+  image: python:3.11-slim
+  services:
+    - mongo:latest  # Utilisation de MongoDB comme service
+  variables:
+    MONGO_HOST: "${MONGO_HOST}"  # Récupération depuis le fichier .env
+    MONGO_PORT: "${MONGO_PORT}"  # Récupération depuis le fichier .env
+    MONGO_DB: "${MONGO_DB}"  # Récupération depuis le fichier .env
+    MONGO_USER: "${MONGO_USER}"  # Récupération depuis le fichier .env
+    MONGO_PASSWORD: "${MONGO_PASSWORD}"  # Récupération depuis le fichier .env
+    # Autres variables tirées de votre fichier .env
+    SECRET_KEY: "${SECRET_KEY}"  # Récupération depuis le fichier .env
+    FIRST_SUPERUSER: "${FIRST_SUPERUSER}"  # Récupération depuis le fichier .env
+    FIRST_SUPERUSER_PASSWORD: "${FIRST_SUPERUSER_PASSWORD}"  # Récupération depuis le fichier .env
+    BACKEND_CORS_ORIGINS: '${BACKEND_CORS_ORIGINS}'  # Récupération depuis le fichier .env
+    VITE_BACKEND_API_URL: "${VITE_BACKEND_API_URL}"  # Récupération depuis le fichier .env
+  cache:
+    paths:
+      - .venv/
+      - backend/.pytest_cache/
+  before_script:
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - cd backend
+    - pip install poetry
+    - poetry install
+    # - pip install pytest pytest-cov
+    # - pip install -r backend/requirements.txt
+  script:
+    - cd backend
+    - pytest --maxfail=1 --disable-warnings tests/  # Lancer les tests unitaires avec pytest
+  interruptible: true
+  artifacts:
+    when: always
+    paths:
+      - backend/htmlcov/
+    reports:
+      junit: backend/reports/report.xml
+      cobertura: backend/reports/coverage.xml
+  coverage: '/^TOTAL.*\s+(\d+\%)$/'

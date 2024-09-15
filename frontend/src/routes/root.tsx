@@ -1,7 +1,7 @@
 import { Box, Toolbar } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import TopMenuBar from '../components/TopMenuBar'
-import { ModalProvider } from '../contexts/modal' 
+import { ModalProvider } from '../contexts/modal'
 
 export default function Root() {
   return (
