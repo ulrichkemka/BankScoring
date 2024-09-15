@@ -19,7 +19,7 @@ frontend_unit_tests:
 
 backend_unit_tests:
   stage: test
-  image: python:3.11-slim
+  image: python:3.11
   services:
     - mongo:latest  # Utilisation de MongoDB comme service
   variables:
