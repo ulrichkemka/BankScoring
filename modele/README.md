@@ -1,30 +1,31 @@
-# Dossier Modèle
+# Model AI
 
-Ce dossier contient les fichiers et ressources liés aux modèles de machine learning utilisés dans le projet **BankScoring**.
+This folder contains the files and resources related to the machine learning models used in the **BankScoring** project.
 
 ## Structure
 
-- **data/** : Ce sous-dossier contient les données nettoyées et les fichiers CSV utilisés pour l'entraînement du modèle.
-  - `df_cleaned_encod.csv` : Les données nettoyées et encodées pour le modèle.
-  - `df_cleaned_encod_v2.csv` : Version mise à jour des données.
-  
-- **notebooks/** : Ce sous-dossier contient les notebooks Jupyter pour l'exploration des données et l'entraînement des modèles.
-  - `Home_credit_exploration_Project_v2.ipynb` : Notebook contenant les analyses exploratoires des données.
-  - `Home_credit_fapp_train_Project2.ipynb` : Notebook contenant l'entraînement du modèle sur les données.
-  - `import_database.ipynb` : Script pour importer les données dans la base de données.
 
-- **model_v1.pkl** : Fichier contenant le modèle de machine learning entraîné au format `pkl`.
+**notebooks/** : This subfolder contains the Jupyter notebooks for data exploration and model training.
+- [Home_credit_exploration_Project_v2.ipynb](./notebooks/Home_credit_exploration_Project_v2.ipynb) : Notebook containing the exploratory analyses of the data.
+- [Home_credit_fapp_train_Project2.ipynb](./notebooks/Home_credit_fapp_train_Project2.ipynb) : Notebook containing the training of the model on the data.
+- [import_database.ipynb](./notebooks/import_database.ipynb) : Script to import data into the database.
 
-- **requirements.txt** : Fichier contenant les dépendances nécessaires pour l'exécution des notebooks et du modèle.
 
-## Utilisation
+**data/** : This subfolder contains the cleaned data and CSV files used for model training.
+- `df_cleaned_encod.csv` : The cleaned and encoded data for the model.
+- `df_cleaned_encod_v2.csv` : Updated version of the data.
 
-### Installation des dépendances
 
-Pour utiliser les notebooks et entraîner le modèle, installez les dépendances requises en exécutant la commande suivante :
+**model_v1.pkl** : File containing the trained machine learning model in `pkl` format.
+
+**requirements.txt** : File containing the dependencies required to run the notebooks and the model.
+
+## Usage
+
+### Installing dependencies
+
+To use the notebooks and train the model, install the required dependencies by running the following command:
 
 ```bash
 pip install -r requirements.txt
 ```
-
-

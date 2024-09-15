@@ -10,6 +10,7 @@ Project Name :  Credit Scoring
 
 ## Descriptioon
 This project is a Credit Scoring Dashboard and Production Deployment Application designed for Home Credit to assess client creditworthiness by developing, deploying, and providing interpretability for a machine learning model through an API and interactive dashboard.
+
 You can find the project documentation here:  : [Project Instruction](./documents/Instructions_Project_Credit_Scoring.pdf).
 
 
@@ -30,7 +31,7 @@ The project is composed of :
 
 * a backend API server built with FastAPI located in the [backend](backend) dir.
 * a frontend web app build with React and located in the [frontend](frontend) dir.
-* a modele AI built with Scikit Learn and located in the [modele](modele) dir
+* a modele AI built with Scikit Learn and located in the [modele](modele) dir.
 
 ## Running the application locally for development
 
