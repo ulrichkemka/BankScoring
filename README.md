@@ -1,32 +1,41 @@
-# Fastapi-React-Mongodb-Docker
+---
+Project Name :  Credit Scoring
+---
 
-![Tests](https://github.com/jonasrenault/fastapi-react-mongodb-docker/actions/workflows/test.yml/badge.svg)
-![Build](https://github.com/jonasrenault/fastapi-react-mongodb-docker/actions/workflows/build.yml/badge.svg)
+# Home Credit - Credit Scoring
+
+[![pipeline status](https://gitlab.com/ulrichkemka/bankscoring/badges/8-deploiement-du-modele/pipeline.svg)](https://gitlab.com/ulrichkemka/bankscoring/-/commits/8-deploiement-du-modele)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-![python_version](https://img.shields.io/badge/Python-%3E=3.10-blue)
+![python_version](https://img.shields.io/badge/Python-%3E=3.11-blue)
 
-This is a template application for a FARM stack. FARM stands for FastAPI, React, MongoDB.
+## Descriptioon
+This project is a Credit Scoring Dashboard and Production Deployment Application designed for Home Credit to assess client creditworthiness by developing, deploying, and providing interpretability for a machine learning model through an API and interactive dashboard.
 
-## Features
+You can find the project documentation here:  : [Project Instruction](./documents/Instructions_Project_Credit_Scoring.pdf).
 
-### Clean design with minimal dependencies
 
-[![API docs](frontend/public/farmd-1.png)](https://github.com/jonasrenault/fastapi-react-mongodb-docker)
 
-### Basic user management with OAuth2 SSO
+## Contributors
 
-[![API docs](frontend/public/farmd-2.png)](https://github.com/jonasrenault/fastapi-react-mongodb-docker)
+| Category                       | Technology                                                        | Responsable                                                     |
+|--------------------------------|-------------------------------------------------------------------|-----------------------------------------------------------------|
+| Management Project             | [GitLab](https://gitlab.com/ulrichkemka/bankscoring/-/boards)     | [Papa Madiodio DIENG](https://gitlab.com/papyDioDio)            |
+| [Backend](./backend/)          | [Fast API](https://fastapi.tiangolo.com/)                         | [Ulrich KEMKA TAKENGNY](https://gitlab.com/ulrichkemka)         |
+| [Fontend](./frontend/)         | [React Js](https://react.dev/)                                    | [Khadim DAFFE](https://gitlab.com/czeed)                        |
+| [Modele IA](./modele/)         | [Scikit Learn](https://scikit-learn.org/stable/)                  | [Cherif Amanotoulha SY](/https://gitlab.com/cherif_Amanatoulha) |
 
-## Project structure
+
+## Project structure    
 
 The project is composed of :
 
 * a backend API server built with FastAPI located in the [backend](backend) dir.
 * a frontend web app build with React and located in the [frontend](frontend) dir.
+* a modele AI built with Scikit Learn and located in the [modele](modele) dir.
 
 ## Running the application locally for development
 
-To run the application manually in a terminal, see both the [backend](backend/README.md) and [frontend](frontend/README.md)'s READMEs for instructions.
+To run the application manually in a terminal, see three the [backend](backend/README.md), [frontend](frontend/README.md) and [modele](modele/README.md)'s READMEs for instructions.
 
 ## Running the application with Docker
 
@@ -68,14 +77,6 @@ To check the logs of a specific service, add the name of the service, e.g.:
 docker compose logs backend
 ```
 
-### Docker Compose settings for development
-
-When running the application with docker in development, both the frontend and backend directories are mounted as volumes to their corresponding docker containers to enable hot reload of code changes. This allows you to test your changes right away, without having to build the Docker image again. It should only be done during development, for production you should build the Docker image with a recent and stable version of the code.
-
-For the backend, there is a command override that runs `/start-reload.sh` (included in the base image) instead of the default `/start.sh` (also included in the base image). It starts a single server process (instead of multiple, as would be for production) and reloads the process whenever the code changes. Have in mind that if you have a syntax error and save the Python file, it will break and exit, and the container will stop. After that, you can restart the container by fixing the error and running the `docker-compose up -d` command again. The backend [Dockerfile](backend/Dockerfile) is in the backend directory.
-
-For the frontend, when in development, the frontend docker container starts with the `npm run dev -- --host` command, while in production the frontend app is built into static files and the app is served by an nginx server. The [nginx configuration file](frontend/nginx.conf) is in the frontend dir.
-
 ### Accessing the containers
 
 To get inside a container with a `bash` session you can start the stack with:
@@ -113,17 +114,10 @@ The [.env](./.env) file contains all the configuration variables. The values set
 
 The `.env` file that is commited to the github repository contains example values which are ok to use for testing and development, but which should be changed when running the application in production (admin passwords, secret keys, client ids, etc.). During deployment in production, the .env file is replaced with one containing the appropriate values.
 
-## Setting up Single Sign-On (SSO) with google
-
-To setup SSO and enable the `Sign-In with Google` button, you must first obtain a client-id and secret token from Google. Follow [these steps](https://developers.google.com/identity/protocols/oauth2) to obtain client credentials from your [Google Cloud Console](https://console.cloud.google.com/).
-
-Create a new project, and from the `APIs & Services` menu, first create an `OAuth consent screen` for you application, then add an `OAuth 2.0 Client Id` in the `Credentials` menu. Select `Web application` as the application type. In the `Authorized redirect URIs`, add your hostname with the `api/v1/login/google/callback` endpoint. For instance, if testing locally while running the backend app with `uvicorn`, add `http://localhost:8000/api/v1/login/google/callback` (use `http://localhost/api/v1/login/google/callback` if running the application in dev with docker). If your application is hosted on a domain name, add it to the list of URIs (remember to update `http` to `https` when using SSL).
-
-Once you've create a client-id and token in your Google cloud console, copy those into your `.env` file's (either directly in the backend [.env](./backend/.env.dev) or in the root [.env](./.env) if using docker) `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` variables.
 
 ## Setting up automatic build of the docker images in github
 
-The project has a [build workflow](./.github/workflows/build.yml) configuration to build the docker images for production and publish those into your Github package registry. To do this, you must first create a [Github Environment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) for your project (call this environment `prod` or update the environment name in the workflow configuration.
+The project has a [build workflow](./.github/workflows/build.yml) configuration to build the docker images for production and publish those into your Github package registry. To do this, you must first create a [Github Environment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment) for your project call this environment `prod` or update the environment name in the workflow configuration.
 
 You also need to add an environment secret variable `SERVER_ENV_PROD` which should contain the root `.env` file with the variables set for your production environment (simply copy-paste the contents of the env file as the github secret). This secret environment variable will be used by the github workflow to build the docker images with the [docker-compose.prod.yml](./docker-compose.prod.yml) file.
 

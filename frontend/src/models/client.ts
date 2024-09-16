@@ -15,7 +15,7 @@ export interface Client {
     FLAG_OWN_CAR?: number // Possède une voiture (1: Oui, 0: Non)
     FLAG_OWN_REALTY?: number // Possède un bien immobilier (1: Oui, 0: Non)
   
-    // Indicateurs de solvabilité et de risque
+    // Indicateurs de solvabilité et de risque 
     TARGET?: number // Indicateur de remboursement du prêt (1: Défaut de remboursement, 0: Paiement complet)
     EXT_SOURCE_2?: number // Score de risque externe 2
     EXT_SOURCE_3?: number // Score de risque externe 3
@@ -37,5 +37,9 @@ export interface Client {
     AMT_GOODS_PRICE?: number // Valeur des biens achetés avec le crédit
     YEARS_BEGINEXPLUATATION_AVG?: number // Nombre moyen d'années d'exploitation du bien
     FLOORSMAX_AVG?: number // Nombre moyen d'étages du bâtiment
+
+    //Prédiction
+    PREDICTION_SCORE?: number
+    PREDICTION_FEATURE?: string
   }
   
