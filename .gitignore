@@ -16,3 +16,5 @@ frontend/node_modules/
 backend/app/routers/model.pkl
 
 df_cleaned_encod*
+
+*.csv
