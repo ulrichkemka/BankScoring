@@ -84,6 +84,19 @@ function setup() {
   }
 }
 
+it('should render user list', async () => {
+  const { getByRole } = setup()
+  await waitFor(() => {
+    expect(getByRole('list')).toBeInTheDocument()
+  })
+
+  const userList = getByRole('list')
+  const userItems = await within(userList).findAllByRole('listitem')
+  expect(userItems).toHaveLength(users.length)
+  userItems.forEach((item, idx) => {
+    expect(item).toHaveTextContent(users[idx].email)
+  })
+})
 
 it('should redirect if loader throws error', async () => {
   server.use(
@@ -95,3 +108,119 @@ it('should redirect if loader throws error', async () => {
   await waitFor(() => expect(router.state.location.pathname).toEqual('/'))
 })
 
+it('should display delete buttons for other users', async () => {
+  const { getAllByRole, getByRole } = setup()
+  await waitFor(() => {
+    expect(getByRole('list')).toBeInTheDocument()
+  })
+
+  const userItems = getAllByRole('listitem')
+  expect(within(userItems[0]).getByRole('button', { name: 'delete' })).toBeInTheDocument()
+})
+
+it('should not display delete button for profile', async () => {
+  const { getAllByRole, getByRole } = setup()
+  await waitFor(() => {
+    expect(getByRole('list')).toBeInTheDocument()
+  })
+
+  const userItems = getAllByRole('listitem')
+  expect(within(userItems[1]).queryByRole('button', { name: 'delete' })).not.toBeInTheDocument()
+})
+
+it('should delete user from the list', async () => {
+  const {
+    getAllByRole,
+    getByRole,
+    getByTestId,
+    queryByTestId,
+    getByLabelText,
+    queryByLabelText,
+    user,
+  } = setup()
+  await waitFor(() => {
+    expect(getByRole('list')).toBeInTheDocument()
+  })
+
+  server.use(
+    http.delete(API_URL + `users/${users[2].uuid}`, () => {
+      return new HttpResponse(null, {
+        status: 200,
+      })
+    }),
+  )
+
+  const userItems = getAllByRole('listitem')
+  const userBtn = getByTestId(users[2].uuid)
+
+  // select user 2. Expect his profile to be displayed
+  await user.click(userBtn)
+  await waitFor(() => {
+    expect(getByLabelText(/Email Address/i)).toHaveValue(users[2].email)
+  })
+
+  // click on delete button. Expect confirmation modal to be shown
+  const deleteBtn = within(userItems[2]).getByRole('button', { name: 'delete' })
+  await user.click(deleteBtn)
+  const confirmBtn = getByRole('button', { name: 'Confirm' })
+  await waitFor(() => {
+    expect(confirmBtn).toBeVisible()
+  })
+
+  // click confirm. Expect profile view to be hidden, and user to be deleted
+  // from the list
+  await user.click(confirmBtn)
+  await waitFor(() => {
+    expect(getByRole('alert')).toHaveTextContent('User deleted successfully.')
+  })
+  expect(getAllByRole('listitem')).toHaveLength(2)
+  expect(queryByTestId(users[2].uuid)).not.toBeInTheDocument()
+  expect(queryByLabelText(/Email Address/i)).not.toBeInTheDocument()
+})
+
+it('should display profile info when user selected', async () => {
+  const { getByRole, getByTestId, getByLabelText, user } = setup()
+  await waitFor(() => {
+    expect(getByRole('list')).toBeInTheDocument()
+  })
+
+  for (let idx = 0; idx < users.length; idx++) {
+    await user.click(getByTestId(users[idx].uuid))
+    await waitFor(() => {
+      expect(getByLabelText(/Email Address/i)).toHaveValue(users[idx].email)
+    })
+  }
+})
+
+it('should update user info in the user list', async () => {
+  const { getByRole, getByTestId, getByLabelText, queryByRole, user } = setup()
+  await waitFor(() => expect(getByRole('list')).toBeInTheDocument())
+
+  server.use(
+    http.patch(API_URL + `users/${users[2].uuid}`, () => {
+      return HttpResponse.json({
+        email: 'ericsmith@gmail.com',
+        is_active: true,
+        is_superuser: false,
+        first_name: 'Brad',
+        last_name: 'Pitt',
+        uuid: 'd1ba04b9-cd9f-40fe-8956-8a0198f47884',
+      })
+    }),
+  )
+
+  // select user 2
+  await user.click(getByTestId(users[2].uuid))
+  await waitFor(() => expect(getByLabelText(/First Name/i)).toHaveValue(users[2].first_name))
+
+  // update its first and last name
+  await user.type(getByLabelText(/First Name/i), 'Brad')
+  await user.type(getByLabelText(/Last Name/i), 'Pitt')
+  const profileform = getByTestId('user-profile-form')
+  fireEvent.submit(profileform)
+
+  await waitFor(() => {
+    expect(queryByRole('alert')).toHaveTextContent('User profile updated successfully.')
+    expect(getByTestId(users[2].uuid)).toHaveTextContent('Brad Pitt')
+  })
+})

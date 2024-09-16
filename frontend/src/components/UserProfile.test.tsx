@@ -111,3 +111,69 @@ it('should display required helper text', async () => {
 
   expect(getByText(/Please provide an email address./i)).toBeVisible()
 })
+
+it('should display is_active and is_superuser if admin', async () => {
+  const { getByLabelText } = setupForAdmin()
+  await waitFor(() => {
+    expect(getByLabelText('Is Super User')).toBeInTheDocument()
+    expect(getByLabelText('Is Active')).toBeInTheDocument()
+  })
+})
+
+it('should update user profile', async () => {
+  const { getByRole, user } = setupForUser()
+
+  const updateBtn = getByRole('button', { name: 'Update' })
+  await user.click(updateBtn)
+
+  expect(getByRole('alert')).toHaveTextContent('User profile updated successfully.')
+})
+
+it('should update other user profile', async () => {
+  const { getByRole, user, profile } = setupForAdmin()
+
+  server.use(
+    http.patch(API_URL + `users/${profile.uuid}`, () => {
+      return HttpResponse.json(profile)
+    }),
+  )
+
+  const updateBtn = getByRole('button', { name: 'Update' })
+  await user.click(updateBtn)
+
+  expect(getByRole('alert')).toHaveTextContent('User profile updated successfully.')
+})
+
+it('should call onUpdate', async () => {
+  const { getByRole, user, profile, handleUpdate } = setupForAdmin()
+
+  const updatedProfile = {
+    email: 'adam@example.com',
+  }
+  server.use(
+    http.patch(API_URL + `users/${profile.uuid}`, () => {
+      return HttpResponse.json(updatedProfile)
+    }),
+  )
+
+  const updateBtn = getByRole('button', { name: 'Update' })
+  await user.click(updateBtn)
+
+  expect(handleUpdate).toHaveBeenCalledWith(updatedProfile)
+})
+
+it('should handle server errors', async () => {
+  const { getByRole, user } = setupForUser()
+
+  const error = 'User with this email already exists'
+  server.use(
+    http.patch(API_URL + `users/me`, () => {
+      return HttpResponse.json({ detail: error }, { status: 500 })
+    }),
+  )
+
+  const updateBtn = getByRole('button', { name: 'Update' })
+  await user.click(updateBtn)
+
+  expect(getByRole('alert')).toHaveTextContent(error)
+})
